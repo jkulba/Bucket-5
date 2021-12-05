@@ -26,5 +26,11 @@ namespace Kulba.Service.Bucket.Repositories
         {
             return await Task.FromResult(bookmarkItems);
         }
+
+        public async Task CreateBookmarkAsync(BookmarkItem item)
+        {
+            bookmarkItems.Add(item);
+            await Task.CompletedTask;
+        }
     }
 }

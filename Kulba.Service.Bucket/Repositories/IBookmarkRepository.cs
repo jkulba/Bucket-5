@@ -10,5 +10,7 @@ namespace Kulba.Service.Bucket.Repositories
         Task<BookmarkItem> GetBookmarkItemAsync(Guid id);
 
         Task<IEnumerable<BookmarkItem>> GetBookmarkItemsAsync();
+
+        Task CreateBookmarkAsync(BookmarkItem item);
     }
 }

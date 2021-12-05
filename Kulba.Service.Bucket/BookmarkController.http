@@ -1,2 +1,9 @@
-# GET bookmarks
+# Fetch all bookmarks
 GET http://localhost:5000/bookmarks HTTP/1.1 Content-Type: application/json
+
+###
+# Fetch bookmark by Id
+GET http://localhost:5000/bookmarks/823e5690-65b6-40e6-a0c1-a3be951d8689 HTTP/1.1 Content-Type: application/json
+
+
+
