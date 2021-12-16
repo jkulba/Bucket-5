@@ -7,10 +7,10 @@ namespace Kulba.Service.Bucket.Repositories
 {
     public interface IBookmarkRepository
     {
-        Task<BookmarkItem> GetBookmarkItemAsync(Guid id);
+        Task<BookmarkItem> GetBookmarkItemByIdAsync(Guid id);
 
         Task<IEnumerable<BookmarkItem>> GetBookmarkItemsAsync();
 
-        Task CreateBookmarkAsync(BookmarkItem item);
+        Task CreateBookmarkItemAsync(BookmarkItem item);
     }
 }

@@ -25,7 +25,7 @@ namespace Kulba.Service.Bucket.Controllers
 
         // Get /bookmarks
         [HttpGet]
-        public async Task<IEnumerable<BookmarkDto>> GetBookmarksAsync()
+        public async Task<IEnumerable<BookmarkDto>> GetBookmarks()
         {
             logger.LogDebug("Hit GetBookmarksAsync service.");
             var bookmarks = (await bookmarkRepository.GetBookmarkItemsAsync())
@@ -36,9 +36,9 @@ namespace Kulba.Service.Bucket.Controllers
 
         // Get /bookmarks/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<BookmarkDto>> GetBookmarkAsync(Guid id)
+        public async Task<ActionResult<BookmarkDto>> GetBookmarkItemById(Guid id)
         {
-            var bookmark = await bookmarkRepository.GetBookmarkItemAsync(id);
+            var bookmark = await bookmarkRepository.GetBookmarkItemByIdAsync(id);
             if (bookmark is null)
             {
                 return NotFound();  
@@ -48,7 +48,7 @@ namespace Kulba.Service.Bucket.Controllers
 
         // POST /bookmarks
         [HttpPost]
-        public async Task<ActionResult<BookmarkDto>> CreateBookmarkAsync(CreateBookmarkDto bookmarkDto)
+        public async Task<ActionResult<BookmarkDto>> PostBookmarkItem(CreateBookmarkDto bookmarkDto)
         {
             BookmarkItem item = new()
             {
@@ -56,11 +56,10 @@ namespace Kulba.Service.Bucket.Controllers
                 Title = bookmarkDto.Title,
                 Url = bookmarkDto.Url,
                 CreatedDate = DateTimeOffset.UtcNow
-            };
+            };            
+            await bookmarkRepository.CreateBookmarkItemAsync(item);
 
-            await bookmarkRepository.CreateBookmarkAsync(item);
-
-            return CreatedAtAction(nameof(GetBookmarkAsync), new { id = item.Id}, item.AsDto());
+            return CreatedAtAction(nameof(GetBookmarkItemById), new { id = item.Id}, item.AsDto());
         }
 
     }
