@@ -62,6 +62,43 @@ namespace Kulba.Service.Bucket.Controllers
             return CreatedAtAction(nameof(GetBookmarkItemById), new { id = item.Id}, item.AsDto());
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> PutBookmarkItem(Guid id, UpdateBookmarkDto bookmarkDto)
+        {
+            var existingBookmark = await bookmarkRepository.GetBookmarkItemByIdAsync(id);
+
+            if (existingBookmark is null)
+            {
+                return NotFound();
+            }
+
+            BookmarkItem updatedBookmark = existingBookmark with {
+                Title = bookmarkDto.Title,
+                Url = bookmarkDto.Url
+            };
+
+            await bookmarkRepository.UpdateBookmarkItemAsync(updatedBookmark);
+
+            return NoContent();
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteBookmarkItem(Guid id)
+        {
+            var existingBookmark = await bookmarkRepository.GetBookmarkItemByIdAsync(id);
+
+            if (existingBookmark is null)
+            {
+                return NotFound();
+            }
+
+           await bookmarkRepository.DeleteBookmarkItemAsync(id);
+
+            return NoContent();
+
+        }
+
     }
 
 }

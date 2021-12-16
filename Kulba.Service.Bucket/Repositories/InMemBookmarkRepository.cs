@@ -32,5 +32,19 @@ namespace Kulba.Service.Bucket.Repositories
             bookmarkItems.Add(item);
             await Task.CompletedTask;
         }
+
+        public async Task UpdateBookmarkItemAsync(BookmarkItem item)
+        {
+            var index = bookmarkItems.FindIndex(existingBookmark => existingBookmark.Id == item.Id);
+            bookmarkItems[index] = item;
+            await Task.CompletedTask;
+        }
+
+        public async Task DeleteBookmarkItemAsync(Guid id)
+        {
+            var index = bookmarkItems.FindIndex(existingBookmark => existingBookmark.Id == id);
+            bookmarkItems.RemoveAt(index);
+            await Task.CompletedTask;
+        }
     }
 }
