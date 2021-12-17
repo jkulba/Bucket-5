@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Kulba.Service.Bucket
 {
@@ -13,7 +14,31 @@ namespace Kulba.Service.Bucket
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile(Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")?.ToLower() == "development" ? "appsettings.Development.json" : "appsettings.json")
+                .Build();
+                // .AddJsonFile("appsettings.Development.json")
+                // .Build();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .CreateLogger();
+
+            try
+            {
+                 var host = CreateHostBuilder(args).Build();
+                 // Add other initialization steps here
+                 host.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host terminated unexpectantly");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -21,6 +46,7 @@ namespace Kulba.Service.Bucket
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseSerilog();
     }
 }
