@@ -1,5 +1,8 @@
+<!-- https://github.com/microsoft/MSBuildSdks/blob/main/src/Traversal/README.md -->
 <Project Sdk="Microsoft.Build.Traversal/3.0.54">
     <ItemGroup>
-        <ProjectReference Include="**\*.*proj" />
+        <!-- <ProjectReference Include="**\*.*proj" /> -->
+        <ProjectReference Include="Kulba.Service.Bucket\*.csproj"/>
+        <ProjectReference Include="Kulba.Service.Bucket.Tests\*.csproj"/>
     </ItemGroup>
 </Project>

@@ -16,7 +16,7 @@ namespace Kulba.Service.Bucket.Repositories
             new BookmarkItem {Id = Guid.NewGuid(), Title = "Microsoft Home Page", Url = "https://www.microsoft.com/", CreatedDate = DateTimeOffset.UtcNow}
         };
 
-        public async Task<BookmarkItem> GetBookmarkItemAsync(Guid id)
+        public async Task<BookmarkItem> GetBookmarkItemByIdAsync(Guid id)
         {
             var bookmarkItem = bookmarkItems.Where(item => item.Id == id).SingleOrDefault();
             return await Task.FromResult(bookmarkItem);
@@ -25,6 +25,26 @@ namespace Kulba.Service.Bucket.Repositories
         public async Task<IEnumerable<BookmarkItem>> GetBookmarkItemsAsync()
         {
             return await Task.FromResult(bookmarkItems);
+        }
+
+        public async Task CreateBookmarkItemAsync(BookmarkItem item)
+        {
+            bookmarkItems.Add(item);
+            await Task.CompletedTask;
+        }
+
+        public async Task UpdateBookmarkItemAsync(BookmarkItem item)
+        {
+            var index = bookmarkItems.FindIndex(existingBookmark => existingBookmark.Id == item.Id);
+            bookmarkItems[index] = item;
+            await Task.CompletedTask;
+        }
+
+        public async Task DeleteBookmarkItemAsync(Guid id)
+        {
+            var index = bookmarkItems.FindIndex(existingBookmark => existingBookmark.Id == id);
+            bookmarkItems.RemoveAt(index);
+            await Task.CompletedTask;
         }
     }
 }
