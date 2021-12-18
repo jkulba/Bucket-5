@@ -15,19 +15,20 @@ namespace Kulba.Service.Bucket.Controllers
     public class BookmarkController : ControllerBase
     {
         private readonly IBookmarkRepository bookmarkRepository;
-        private readonly ILogger<BookmarkController> logger;
+        private readonly ILogger<BookmarkController> _logger;
 
         public BookmarkController(IBookmarkRepository bookmarkRepository, ILogger<BookmarkController> logger)
         {
             this.bookmarkRepository = bookmarkRepository;
-            this.logger = logger;
+            this._logger = logger;
         }
 
         // Get /bookmarks
         [HttpGet]
         public async Task<IEnumerable<BookmarkDto>> GetBookmarks()
         {
-            logger.LogDebug("Hit GetBookmarksAsync service.");
+            Console.WriteLine("YUCK 1");
+            _logger.LogDebug("Hit GetBookmarksAsync service.");
             var bookmarks = (await bookmarkRepository.GetBookmarkItemsAsync())
                 .Select(bookmarkItem => bookmarkItem.AsDto());
             return bookmarks;
@@ -38,6 +39,7 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BookmarkDto>> GetBookmarkItemById(Guid id)
         {
+            Console.WriteLine("YUCK 2");
             var bookmark = await bookmarkRepository.GetBookmarkItemByIdAsync(id);
             if (bookmark is null)
             {
@@ -50,6 +52,7 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpPost]
         public async Task<ActionResult<BookmarkDto>> PostBookmarkItem(CreateBookmarkDto bookmarkDto)
         {
+            Console.WriteLine("YUCK 3");
             BookmarkItem item = new()
             {
                 Id = Guid.NewGuid(),
@@ -65,6 +68,7 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> PutBookmarkItem(Guid id, UpdateBookmarkDto bookmarkDto)
         {
+            Console.WriteLine("YUCK 4");
             var existingBookmark = await bookmarkRepository.GetBookmarkItemByIdAsync(id);
 
             if (existingBookmark is null)

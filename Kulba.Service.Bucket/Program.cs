@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Kulba.Service.Bucket.Sinks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -15,13 +16,12 @@ namespace Kulba.Service.Bucket
         public static void Main(string[] args)
         {
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile(Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT")?.ToLower() == "development" ? "appsettings.Development.json" : "appsettings.json")
+                .AddJsonFile(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower() == "development" ? "appsettings.Development.json" : "appsettings.json")
                 .Build();
-                // .AddJsonFile("appsettings.Development.json")
-                // .Build();
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
+                .WriteTo.Request(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
                 .CreateLogger();
 
             try
