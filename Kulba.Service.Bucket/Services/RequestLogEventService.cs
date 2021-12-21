@@ -21,12 +21,13 @@ namespace Kulba.Service.Bucket.Services
             _logger.LogInformation("Hit AddLogEvent");
 
             _logEvents.Add(logEvent);
+            _logger.LogDebug("logEvents size: {count}", _logEvents.Count);
             await Task.CompletedTask;    
         }
 
-        public Task<List<LogEvent>> RequestLogEvents()
+        public async Task<List<LogEvent>> RequestLogEvents()
         {
-            throw new System.NotImplementedException();
+            return await Task.FromResult(_logEvents);
         }
     }
 }

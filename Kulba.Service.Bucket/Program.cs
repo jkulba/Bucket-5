@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Kulba.Service.Bucket.Sinks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Kulba.Service.Bucket.Services;
+using Kulba.Service.Bucket.Sinks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Events;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Kulba.Service.Bucket
 {
@@ -21,14 +24,12 @@ namespace Kulba.Service.Bucket
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
-                .WriteTo.Request(restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information)
-                .CreateLogger();
+                .WriteTo.Console()
+                .CreateBootstrapLogger();
 
             try
             {
-                 var host = CreateHostBuilder(args).Build();
-                 // Add other initialization steps here
-                 host.Run();
+                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)
             {
@@ -43,10 +44,12 @@ namespace Kulba.Service.Bucket
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                })
-                .UseSerilog();
+                .UseSerilog((context, services, cfg) => cfg
+                    .WriteTo.Console()
+                    .ReadFrom.Configuration(context.Configuration)
+                    .ReadFrom.Services(services))
+                    // .WriteTo.RequestLogEventSink(services.GetRequiredService<IMemoryCache))
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
+                
     }
 }

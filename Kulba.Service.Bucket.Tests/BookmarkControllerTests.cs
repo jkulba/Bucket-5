@@ -5,6 +5,7 @@ using Kulba.Service.Bucket.Controllers;
 using Kulba.Service.Bucket.Entities;
 using Kulba.Service.Bucket.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
@@ -15,6 +16,7 @@ namespace Kulba.Service.Bucket.Tests
     {
         private readonly Mock<IBookmarkRepository> bookmarkRepositoryStub = new();
         private readonly Mock<ILogger<BookmarkController>> loggerStub = new();
+        private readonly Mock<IMemoryCache> memoryCache = new();
         private readonly Random rand = new();
 
          [Fact]
@@ -23,7 +25,7 @@ namespace Kulba.Service.Bucket.Tests
             // Arrange
             bookmarkRepositoryStub.Setup(repo => repo.GetBookmarkItemByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync((BookmarkItem)null);
-            var controller = new BookmarkController(bookmarkRepositoryStub.Object, loggerStub.Object);
+            var controller = new BookmarkController(bookmarkRepositoryStub.Object, memoryCache.Object, loggerStub.Object);
 
             // Act
             var result = await controller.GetBookmarkItemById(Guid.NewGuid());

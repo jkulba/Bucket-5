@@ -6,7 +6,9 @@ using Kulba.Service.Bucket.Dtos;
 using Kulba.Service.Bucket.Entities;
 using Kulba.Service.Bucket.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using Serilog.Extensions.Hosting;
 
 namespace Kulba.Service.Bucket.Controllers
 {
@@ -15,19 +17,21 @@ namespace Kulba.Service.Bucket.Controllers
     public class BookmarkController : ControllerBase
     {
         private readonly IBookmarkRepository bookmarkRepository;
+        private readonly IMemoryCache _memoryCache;
         private readonly ILogger<BookmarkController> _logger;
 
-        public BookmarkController(IBookmarkRepository bookmarkRepository, ILogger<BookmarkController> logger)
+        public BookmarkController(IBookmarkRepository bookmarkRepository, IMemoryCache memoryCache, ILogger<BookmarkController> logger)
         {
             this.bookmarkRepository = bookmarkRepository;
             this._logger = logger;
+            this._memoryCache = memoryCache;
+
         }
 
         // Get /bookmarks
         [HttpGet]
         public async Task<IEnumerable<BookmarkDto>> GetBookmarks()
         {
-            Console.WriteLine("YUCK 1");
             _logger.LogDebug("Hit GetBookmarksAsync service.");
             var bookmarks = (await bookmarkRepository.GetBookmarkItemsAsync())
                 .Select(bookmarkItem => bookmarkItem.AsDto());
@@ -39,7 +43,7 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BookmarkDto>> GetBookmarkItemById(Guid id)
         {
-            Console.WriteLine("YUCK 2");
+            _logger.LogDebug("Hit GetBookmarkItemById with Id: {id}.", id);
             var bookmark = await bookmarkRepository.GetBookmarkItemByIdAsync(id);
             if (bookmark is null)
             {
@@ -52,7 +56,7 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpPost]
         public async Task<ActionResult<BookmarkDto>> PostBookmarkItem(CreateBookmarkDto bookmarkDto)
         {
-            Console.WriteLine("YUCK 3");
+            _logger.LogInformation("Create new Bookmark Item: {title}.", bookmarkDto.Title);
             BookmarkItem item = new()
             {
                 Id = Guid.NewGuid(),
@@ -68,7 +72,7 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> PutBookmarkItem(Guid id, UpdateBookmarkDto bookmarkDto)
         {
-            Console.WriteLine("YUCK 4");
+            _logger.LogInformation("Update Bookmark Item: {title}.", bookmarkDto.Title);
             var existingBookmark = await bookmarkRepository.GetBookmarkItemByIdAsync(id);
 
             if (existingBookmark is null)
@@ -90,6 +94,7 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteBookmarkItem(Guid id)
         {
+            _logger.LogInformation("Delete Bookmark Item Id: {id}.", id);
             var existingBookmark = await bookmarkRepository.GetBookmarkItemByIdAsync(id);
 
             if (existingBookmark is null)
