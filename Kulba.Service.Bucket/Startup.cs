@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 using Kulba.Service.Bucket.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 
 namespace Kulba.Service.Bucket
 {
@@ -29,10 +27,6 @@ namespace Kulba.Service.Bucket
             services.AddSingleton<IBookmarkRepository, InMemBookmarkRepository>();
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Kulba.Service.Bucket", Version = "v1" });
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,8 +35,6 @@ namespace Kulba.Service.Bucket
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kulba.Service.Bucket v1"));
             }
 
             app.UseRouting();
