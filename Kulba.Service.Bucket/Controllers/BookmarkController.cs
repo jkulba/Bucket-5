@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Kulba.Service.Bucket.Dtos;
 using Kulba.Service.Bucket.Entities;
+using Kulba.Service.Bucket.Extensions;
 using Kulba.Service.Bucket.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -27,9 +28,14 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpGet]
         public async Task<IEnumerable<BookmarkDto>> GetBookmarks()
         {
-            logger.LogDebug("Hit GetBookmarksAsync service.");
+            logger.LogWarning("Hit GetBookmarksAsync service.");
+
+            logger.LogError("Sample Error log message");
+            logger.LogCritical("Sample Critical log message");
+
             var bookmarks = (await bookmarkRepository.GetBookmarkItemsAsync())
                 .Select(bookmarkItem => bookmarkItem.AsDto());
+
             return bookmarks;
         }
 

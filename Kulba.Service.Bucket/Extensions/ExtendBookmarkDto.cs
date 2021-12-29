@@ -1,11 +1,11 @@
 using Kulba.Service.Bucket.Dtos;
 using Kulba.Service.Bucket.Entities;
 
-namespace Kulba.Service.Bucket
+namespace Kulba.Service.Bucket.Extensions
 {
-    public static class Extensions
+    public static class ExtendBookmarkDto
     {
-        public static BookmarkDto AsDto(this BookmarkItem bookmarkItem)
+                public static BookmarkDto AsDto(this BookmarkItem bookmarkItem)
         {
             return new BookmarkDto
             {
@@ -15,5 +15,6 @@ namespace Kulba.Service.Bucket
                 CreatedDate = bookmarkItem.CreatedDate
             };
         }
+
     }
 }
