@@ -4,13 +4,15 @@ using Serilog.Events;
 
 namespace Kulba.Service.Bucket.Services
 {
-    public sealed class RequestLogEventList : IRequestLogEventList
+    public class RequestLogEventList : IRequestLogEventList
     {
         private readonly List<LogEvent> _logEvents = new();
-        static RequestLogEventList() {}
-        private RequestLogEventList() {}
+        private readonly ILogger<RequestLogEventList> _logger;
 
-        public static IRequestLogEventList Instance { get; } = new RequestLogEventList();
+        public RequestLogEventList(ILogger<RequestLogEventList> logger)
+        {
+            _logger = logger;
+        }
         public void Add(LogEvent logEvent)
         {
             _logEvents.Add(logEvent);
@@ -18,7 +20,7 @@ namespace Kulba.Service.Bucket.Services
 
         public List<LogEvent> Fetch(string id)
         {
-            throw new System.NotImplementedException();
+            return _logEvents;
         }
 
         public void Flush(string id)

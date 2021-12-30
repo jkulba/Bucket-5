@@ -33,7 +33,7 @@ namespace Kulba.Service.Bucket
 
                 Log.Logger = new LoggerConfiguration()                                    
                     .ReadFrom.Configuration(configuration)
-                    .CreateLogger();
+                    .CreateBootstrapLogger();
             
                 Log.Warning("Starting Conversion Service...");
                 Log.Information("====================================================================");
