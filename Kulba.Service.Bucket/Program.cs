@@ -27,25 +27,15 @@ namespace Kulba.Service.Bucket
             {
                 _baseProjectPath = AppDomain.CurrentDomain.BaseDirectory;
 
-                // var configuration = new ConfigurationBuilder()
-                //     .SetBasePath(Directory.GetCurrentDirectory())
-                //     .AddJsonFile(path: "appsettings.json", optional: false, reloadOnChange: true)
-                //     .Build();
-
-                // var logger = new LoggerConfiguration()
-                //     .ReadFrom.Configuration(configuration)
-                //     .CreateLogger();
-
                 var configuration = new ConfigurationBuilder()
-                    // .AddJsonFile(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower() == "development" ? "appsettings.Development.json" : "appsettings.json")
                     .AddJsonFile(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower() == "development" ? "appsettings-test.json" : "appsettings.json")
                     .Build();
 
-                Log.Logger = new LoggerConfiguration()                
+                Log.Logger = new LoggerConfiguration()                                    
                     .ReadFrom.Configuration(configuration)
-                    .CreateBootstrapLogger();
+                    .CreateLogger();
             
-                Log.Information("Starting Conversion Service...");
+                Log.Warning("Starting Conversion Service...");
                 Log.Information("====================================================================");
                 Log.Information($"Application Version: {System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version}");
                 Log.Information($"Application Directory: {_baseProjectPath}");
@@ -70,9 +60,7 @@ namespace Kulba.Service.Bucket
             Host.CreateDefaultBuilder(args)
                 .UseSerilog((context, services, configuration) => configuration
                     .ReadFrom.Configuration(context.Configuration)
-                    .ReadFrom.Services(services)
-                    .Enrich.FromLogContext()
-                    .WriteTo.Console())
+                    .WriteTo.BucketSink().WriteTo.Console())
                 .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); });
     }
 

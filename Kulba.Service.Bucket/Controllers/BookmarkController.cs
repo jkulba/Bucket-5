@@ -28,10 +28,7 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpGet]
         public async Task<IEnumerable<BookmarkDto>> GetBookmarks()
         {
-            logger.LogWarning("Hit GetBookmarksAsync service.");
-
-            logger.LogError("Sample Error log message");
-            logger.LogCritical("Sample Critical log message");
+            logger.LogInformation("Hit GetBookmarksAsync service.");
 
             var bookmarks = (await bookmarkRepository.GetBookmarkItemsAsync())
                 .Select(bookmarkItem => bookmarkItem.AsDto());
