@@ -1,31 +1,49 @@
+using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
 using Serilog.Events;
 
 namespace Kulba.Service.Bucket.Services
 {
     public class RequestLogEventList : IRequestLogEventList
     {
+        private static RequestLogEventList _instance = null;
         private readonly List<LogEvent> _logEvents = new();
-        private readonly ILogger<RequestLogEventList> _logger;
+        private static object lockThis = new object();
 
-        public RequestLogEventList(ILogger<RequestLogEventList> logger)
+        private RequestLogEventList() {}
+
+        public static RequestLogEventList Instance()
         {
-            _logger = logger;
-        }
+            lock(lockThis)
+            {
+                if (RequestLogEventList._instance == null)
+                {
+                    _instance = new RequestLogEventList();
+                }
+            }
+            return _instance;
+        } 
+
         public void Add(LogEvent logEvent)
         {
             _logEvents.Add(logEvent);
+             Console.WriteLine("LogEventListSize: " + _logEvents.Count);
         }
 
         public List<LogEvent> Fetch(string id)
         {
-            return _logEvents;
+            List<LogEvent> results = new();
+
+            
+
+
+            return results;
         }
 
         public void Flush(string id)
         {
             _logEvents.Clear();
+            Console.WriteLine("LogEventListSize: " + _logEvents.Count);
         }
     }
 }
