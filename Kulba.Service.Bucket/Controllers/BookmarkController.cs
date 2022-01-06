@@ -6,8 +6,10 @@ using Kulba.Service.Bucket.Dtos;
 using Kulba.Service.Bucket.Entities;
 using Kulba.Service.Bucket.Extensions;
 using Kulba.Service.Bucket.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 
 namespace Kulba.Service.Bucket.Controllers
 {
@@ -28,7 +30,16 @@ namespace Kulba.Service.Bucket.Controllers
         [HttpGet]
         public async Task<IEnumerable<BookmarkDto>> GetBookmarks()
         {
-            logger.LogInformation("Hit GetBookmarksAsync service.");
+            var connectionId = string.Empty;
+
+            if (!string.IsNullOrEmpty(HttpContext.TraceIdentifier))
+            {
+                var traceId = HttpContext.TraceIdentifier;
+                var stop = traceId.IndexOf(":");
+                connectionId = traceId.Substring(0, stop);
+            }
+
+            logger.LogInformation("Hit GetBookmarksAsync service: ");
 
             var bookmarks = (await bookmarkRepository.GetBookmarkItemsAsync())
                 .Select(bookmarkItem => bookmarkItem.AsDto());
@@ -100,6 +111,15 @@ namespace Kulba.Service.Bucket.Controllers
 
             return NoContent();
 
+        }
+
+        private void PrintHeader(IHeaderDictionary headerDictionary)
+        {
+            foreach(StringValues keys in headerDictionary.Keys)
+            {
+                string str = "Key: " + keys + " Values: : " + headerDictionary[keys];
+                Console.WriteLine(str);
+            }
         }
 
     }

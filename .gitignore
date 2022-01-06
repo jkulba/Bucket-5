@@ -348,3 +348,6 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+Kulba.Service.Bucket/.vscode/launch.json
+.gitignore
+Kulba.Service.Bucket/.vscode/tasks.json

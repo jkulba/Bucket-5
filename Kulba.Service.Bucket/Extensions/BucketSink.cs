@@ -18,7 +18,7 @@ namespace Kulba.Service.Bucket.Extensions
 
             foreach(var p in logEvent.Properties)
             {
-                Console.WriteLine("Key: " + p.Key);
+                // Console.WriteLine("Key: " + p.Key);
                 if (p.Key == "ConnectionId")
                 {
                     RequestLogEventList.Instance().Add(logEvent);
